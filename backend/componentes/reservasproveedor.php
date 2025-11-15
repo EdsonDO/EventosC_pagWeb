@@ -1,5 +1,7 @@
 <?php
 require_once 'conexion.php';
+require_once __DIR__ . '/../validations/reservaProveedorValidation.php';
+
 
 class ReservasProveedor {
     private $pdo;
@@ -20,6 +22,7 @@ class ReservasProveedor {
     }
 
     public function obtener($id_reservas, $id_proveedores) {
+       
         try {
             $stmt = $this->pdo->prepare("
                 SELECT * FROM Reservas_Proveedor 
@@ -37,6 +40,11 @@ class ReservasProveedor {
     }
 
     public function crear($data) {
+     $errores = ReservasProveedorValidation::validar($data);
+    if (!empty($errores)) {
+        echo json_encode(['errores' => $errores]);
+        return;
+    }
         try {
             $stmt = $this->pdo->prepare("
                 INSERT INTO Reservas_Proveedor (id_reservas, id_proveedores)
