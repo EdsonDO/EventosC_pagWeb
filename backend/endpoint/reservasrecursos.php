@@ -12,11 +12,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require_once 'componentes/reservasrecursos.php';
+require_once '../validations/reservasrecursos.php';
 
 $reservasRecursos = new ReservasRecursos();
 $accion = $_GET['accion'] ?? '';
 
-switch($accion) {
+switch ($accion) {
     case 'listar':
         $reservasRecursos->listar();
         break;
@@ -29,6 +30,11 @@ switch($accion) {
 
     case 'crear':
         $data = json_decode(file_get_contents('php://input'), true);
+        $valid = validarReservasRecursos($data);
+        if (isset($valid['error'])) {
+            echo json_encode($valid);
+            exit();
+        }
         $reservasRecursos->crear($data);
         break;
 
