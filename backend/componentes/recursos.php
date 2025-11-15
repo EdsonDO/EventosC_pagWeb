@@ -1,5 +1,7 @@
 <?php
 require_once 'conexion.php';
+require_once __DIR__ . '/../validations/RecursoValidation.php';
+
 
 class Recursos {
     private $pdo;
@@ -31,6 +33,12 @@ class Recursos {
     }
 
     public function crear($data) {
+    
+        $errores = RecursoValidation::validar($data);
+    if (!empty($errores)) {
+        echo json_encode(['errores' => $errores]);
+        return;
+    }
         try {
             $stmt = $this->pdo->prepare("
                 INSERT INTO Recursos (nombre_recurso, cantidad, ubicacion, estado, prox_mantenimiento, id_tipo)
@@ -51,6 +59,11 @@ class Recursos {
     }
 
     public function actualizar($id, $data) {
+    $errores = RecursoValidation::validar($data);
+        if (!empty($errores)) {
+       echo json_encode(['errores' => $errores]);
+         return;
+    }
         try {
             $stmt = $this->pdo->prepare("
                 UPDATE Recursos SET
