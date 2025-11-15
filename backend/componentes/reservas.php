@@ -1,5 +1,6 @@
 <?php
 require_once 'conexion.php';
+require_once __DIR__ . '/../validations/reservaValidation.php';
 
 class Reservas {
     private $pdo;
@@ -31,6 +32,11 @@ class Reservas {
     }
 
     public function crear($data) {
+     $errores = ReservasValidation::validar($data);
+    if (!empty($errores)) {
+        echo json_encode(['errores' => $errores]);
+        return;
+    }
         try {
             $stmt = $this->pdo->prepare("
                 INSERT INTO Reservas (fecha, numero_asistentes, total, estado, id_cliente, id_pagos, id_evento, id_ubicacion)
@@ -53,6 +59,11 @@ class Reservas {
     }
 
     public function actualizar($id, $data) {
+    $errores = ReservasValidation::validar($data);
+      if (!empty($errores)) {
+        echo json_encode(['errores' => $errores]);
+        return;
+    }
         try {
             $stmt = $this->pdo->prepare("
                 UPDATE Reservas SET
