@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require_once '../componentes/roles.php';
+require_once '../validations/roles.php';
 
 $roles = new Roles();
 $accion = $_GET['accion'] ?? '';
@@ -28,6 +29,11 @@ switch($accion) {
 
     case 'crear':
         $data = json_decode(file_get_contents('php://input'), true);
+        $valid = validarRoles($data);
+        if (isset($valid['error'])) {
+            echo json_encode($valid);
+            exit();
+        }
         $roles->crear($data);
         break;
 
@@ -45,3 +51,5 @@ switch($accion) {
     default:
         echo json_encode(['error' => 'Acción no válida']);
 }
+
+

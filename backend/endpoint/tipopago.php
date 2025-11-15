@@ -12,11 +12,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require_once 'componentes/tipopago.php';
+require_once '../validations/tipopago.php';
 
 $tipoPago = new TipoPago();
 $accion = $_GET['accion'] ?? '';
 
-switch($accion) {
+switch ($accion) {
     case 'listar':
         $tipoPago->listar();
         break;
@@ -28,6 +29,11 @@ switch($accion) {
 
     case 'crear':
         $data = json_decode(file_get_contents('php://input'), true);
+        $valid = validarTipoPago($data);
+        if (isset($valid['error'])) {
+            echo json_encode($valid);
+            exit();
+        }
         $tipoPago->crear($data);
         break;
 
