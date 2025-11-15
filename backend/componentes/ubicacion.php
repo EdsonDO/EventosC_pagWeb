@@ -1,5 +1,6 @@
 <?php
 require_once 'conexion.php';
+require_once 'validadores/UbicacionValidator.php';
 
 class Ubicacion {
     private $pdo;
@@ -31,6 +32,14 @@ class Ubicacion {
     }
 
     public function crear($data) {
+        $validator = new UbicacionValidator($data);
+        
+        if (!$validator->validateDatos($data)) {
+            http_response_code(400);
+            echo json_encode(['errores' => $validator->getErrors()]);
+            exit();
+        }
+
         try {
             $stmt = $this->pdo->prepare("INSERT INTO Ubicacion (nombre) VALUES (:nombre)");
             $stmt->execute([':nombre' => $data['nombre']]);
@@ -41,6 +50,22 @@ class Ubicacion {
     }
 
     public function actualizar($id, $data) {
+        $idErrors = UbicacionValidator::validateId($id);
+        
+        if (!empty($idErrors)) {
+            http_response_code(400); 
+            echo json_encode(['errores' => $idErrors]);
+            exit();
+        }
+        
+        $validator = new UbicacionValidator($data);
+        
+        if (!$validator->validateDatos($data)) {
+            http_response_code(400);
+            echo json_encode(['errores' => $validator->getErrors()]);
+            exit();
+        }
+
         try {
             $stmt = $this->pdo->prepare("UPDATE Ubicacion SET nombre = :nombre WHERE id = :id");
             $stmt->execute([

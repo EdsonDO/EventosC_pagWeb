@@ -12,11 +12,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require_once 'componentes/tiporecurso.php';
+require_once '../validations/tiporecurso.php';
 
 $tipoRecurso = new TipoRecurso();
 $accion = $_GET['accion'] ?? '';
 
-switch($accion) {
+switch ($accion) {
     case 'listar':
         $tipoRecurso->listar();
         break;
@@ -28,6 +29,11 @@ switch($accion) {
 
     case 'crear':
         $data = json_decode(file_get_contents('php://input'), true);
+        $valid = validarTipoRecurso($data);
+        if (isset($valid['error'])) {
+            echo json_encode($valid);
+            exit();
+        }
         $tipoRecurso->crear($data);
         break;
 
