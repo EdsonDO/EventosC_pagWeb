@@ -1,0 +1,12 @@
+Acá según Heli, agarren algunos archivos del ENDPOINT y hagas sus validaciones en esta carpeta
+
+
+PEROOOOO
+
+La relación de archivos es la siguiente:
+
+Edson: 5 archivos (Adelanto, cliente, evento, mantenimiento, pagos)
+Raul: 4 archivos (proveedores, recursos, reservas, reservasproveedor)
+Jean: 4 archivos (reservasrecursos, roles, tipopago, tiporecurso)
+Danniels: 1 Archivo (ubicacion)
+Victor: 2 archivos (usuario, usuarioreservas)
