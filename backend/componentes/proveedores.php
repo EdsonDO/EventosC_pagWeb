@@ -1,5 +1,7 @@
 <?php
 require_once 'conexion.php';
+require_once __DIR__ . '/../validations/proveedorValidation.php';
+
 
 class Proveedores {
     private $pdo;
@@ -31,6 +33,11 @@ class Proveedores {
     }
 
     public function crear($data) {
+     $errores = ProveedorValidation::validar($data);
+    if (!empty($errores)) {
+        echo json_encode(['errores' => $errores]);
+        return;
+    }
         try {
             $stmt = $this->pdo->prepare("
                 INSERT INTO Proveedores (nombre_empresa, nombre_responsable, telefono, email, direccion, estado)
@@ -51,6 +58,11 @@ class Proveedores {
     }
 
     public function actualizar($id, $data) {
+    $errores = ProveedorValidation::validar($data);
+    if (!empty($errores)) {
+        echo json_encode(['errores' => $errores]);
+        return;
+    }
         try {
             $stmt = $this->pdo->prepare("
                 UPDATE Proveedores SET
@@ -78,6 +90,7 @@ class Proveedores {
     }
 
     public function eliminar($id) {
+    
         try {
             $stmt = $this->pdo->prepare("DELETE FROM Proveedores WHERE id = :id");
             $stmt->execute([':id' => $id]);
