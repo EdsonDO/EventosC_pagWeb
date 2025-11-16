@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-require_once 'componentes/recursos.php';
+require_once '../componentes/recursos.php';
 
 $recursos = new Recursos();
 $accion = $_GET['accion'] ?? '';

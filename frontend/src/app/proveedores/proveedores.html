@@ -1,0 +1,298 @@
+<div style="width: 90%; margin: auto; padding: 3% 0;">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px;">
+        <!-- Búsqueda -->
+        <div style="flex: 1;">
+            <input
+                pInputText
+                [(ngModel)]="busqueda"
+                placeholder="Buscar proveedor..."
+                (input)="filtrar()"
+                style="width: 100%; padding: 8px; border-radius: 4px;"
+            />
+        </div>
+
+        <!-- Filtro por estado -->
+        <p-select
+            [options]="estados"
+            [(ngModel)]="filtroEstado"
+            [showClear]="true"
+            placeholder="Filtrar por estado"
+            (onChange)="filtrar()"
+            appendTo="body"
+        ></p-select>
+
+        <!-- Filtro por servicio -->
+        <p-select
+            [options]="servicios"
+            [(ngModel)]="filtroServicio"
+            [showClear]="true"
+            placeholder="Filtrar por servicio"
+            (onChange)="filtrar()"
+            optionLabel="nombre" 
+            optionValue="id"
+            appendTo="body"
+        ></p-select>
+
+        <!-- Botón Agregar -->
+        <button pButton label="Agregar Proveedor" icon="pi pi-plus" (click)="abrirModalAgregar()"></button>
+    </div>
+</div>
+
+<div style="width: 90%; margin: auto; display: flex; gap: 20px;">
+    <p-card *ngFor="let proveedor of proveedoresFiltrados" styleClass="proveedor-card" [style]="{'width':'350px'}">
+
+        <!-- Encabezado: ícono, nombre y estado -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px;">
+            <i class="pi pi-briefcase" style="font-size: 2.5rem"></i>
+            <div style="flex: 1; font-weight: bold;">
+            {{ proveedor.nombre_empresa }}<br> (PROV-{{ proveedor.id | number:'3.0' }})
+            </div>
+
+            <p-message 
+                [severity]="
+                    proveedor.estado === 'Disponible' ? 'success' :
+                    proveedor.estado === 'No disponible' ? 'error' :
+                    proveedor.estado === 'Ocupado' ? 'info' :
+                    null
+                "
+                [text]="proveedor.estado"
+                [icon]="
+                    proveedor.estado === 'Disponible' ? 'pi pi-check-circle' :
+                    proveedor.estado === 'No disponible' ? 'pi pi-times-circle' :
+                    proveedor.estado === 'Ocupado' ? 'pi pi-info-circle' :
+                    'pi pi-question-circle'
+                "
+                size="small"
+            ></p-message>
+        </div>
+
+        <!-- Detalles del proveedor -->
+        <div style="display: flex; grid-template-columns: auto auto; row-gap: 10px; font-size: 14px; margin: 15px 0; flex-direction: column;">
+        
+            <!-- Dirección -->
+            <div style="display: flex; align-items: center;">
+                <i class="pi pi-map-marker" style="margin-right: 10px;"></i>{{ proveedor.direccion }}
+            </div>
+
+            <!-- Teléfono -->
+            <div style="display: flex; align-items: center;">
+                <i class="pi pi-phone" style="margin-right: 10px;"></i>{{ proveedor.telefono }}
+            </div>
+
+            <!-- Email -->
+            <div style="display: flex; align-items: center;">
+                <i class="pi pi-envelope" style="margin-right: 10px;"></i>{{ proveedor.email }}
+            </div>
+
+        </div>
+
+        <!-- Botones de acción -->
+        <div style="display: flex; gap: 5px;">
+            <button pButton label="Editar" icon="pi pi-pencil" severity="contrast" class="p-button-outlined" (click)="abrirModalEditar(proveedor)" style="flex: 3;"></button>
+            <button pButton icon="pi pi-trash" severity="danger" class="p-button-danger p-button-outlined" (click)="abrirModalEliminar(proveedor)" style="flex: 1;"></button>
+        </div>
+    </p-card>
+</div>
+
+<!-- Tabla con detalles de los proveedores -->
+<div style="width: 90%; margin: auto; margin-top: 30px;">
+    <p-table [value]="proveedoresFiltrados">
+        <ng-template pTemplate="header">
+        <tr>
+            <th>ID</th>
+            <th>Proveedor</th>
+            <th>Servicio</th>
+            <th>Contacto</th>
+            <th>Dirección</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Disponibilidad</th>
+        </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-proveedor>
+        <tr>
+            <td>PROV-{{ proveedor.id | number:'3.0' }}</td>
+            <td>{{ proveedor.nombre_empresa }}</td>
+            <td>{{ obtenerNombreServicio(proveedor.id_servicio) }}</td>
+            <td>{{ proveedor.nombre_responsable }}</td>
+            <td>{{ proveedor.direccion }}</td>
+            <td>{{ proveedor.telefono }}</td>
+            <td>{{ proveedor.email }}</td>
+            <td>
+            <p-message 
+                [severity]="
+                proveedor.estado === 'Disponible' ? 'success' :
+                proveedor.estado === 'No disponible' ? 'error' :
+                proveedor.estado === 'Ocupado' ? 'info' :
+                null
+                "
+                [text]="proveedor.estado"
+                [icon]="
+                proveedor.estado === 'Disponible' ? 'pi pi-check-circle' :
+                proveedor.estado === 'No disponible' ? 'pi pi-times-circle' :
+                proveedor.estado === 'Ocupado' ? 'pi pi-info-circle' :
+                'pi pi-question-circle'
+                "
+                size="small"
+            ></p-message>
+            </td>
+        </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Modal Agregar / Editar Proveedor -->
+<p-dialog [(visible)]="modalVisible" [modal]="true" [closable]="false" [draggable]="false" [header]="modalTitulo">
+    <!-- Formulario de agregar/editar proveedor -->
+    <div class="p-fluid" style="display: flex; flex-direction: column; gap: 15px;">
+        <p-floatLabel variant="in">
+            <input id="nombre_empresa" type="text" pInputText [(ngModel)]="proveedorModal.nombre_empresa" required />
+            <label for="nombre_empresa">Nombre de empresa</label>
+        </p-floatLabel>
+
+        <p-floatLabel variant="in">
+            <input id="nombre_responsable" type="text" pInputText [(ngModel)]="proveedorModal.nombre_responsable" required />
+            <label for="nombre_responsable">Nombre de responsable</label>
+        </p-floatLabel>
+
+        <p-floatLabel variant="in">
+            <input id="direccion" type="text" pInputText [(ngModel)]="proveedorModal.direccion" required />
+            <label for="direccion">Dirección</label>
+        </p-floatLabel>
+
+        <p-floatLabel variant="in">
+            <input id="telefono" type="text" pInputText [(ngModel)]="proveedorModal.telefono" />
+            <label for="telefono">Teléfono</label>
+        </p-floatLabel>
+
+        <p-floatLabel variant="in">
+            <input id="email" type="email" pInputText [(ngModel)]="proveedorModal.email" />
+            <label for="email">Correo electrónico</label>
+        </p-floatLabel>
+
+        <p-floatLabel variant="in">
+            <p-select 
+                [options]="estados" 
+                [(ngModel)]="proveedorModal.estado" 
+                style="width: 100%;" 
+                appendTo="body"
+            ></p-select>
+            <label for="estado">Estado</label>
+        </p-floatLabel>
+
+        <p-floatlabel variant="in">
+            <p-select 
+                [options]="servicios" 
+                [(ngModel)]="proveedorModal.id_servicio"
+                optionLabel="nombre" 
+                optionValue="id"
+                style="width: 100%;" 
+                appendTo="body"
+            >
+                <ng-template #footer>
+                    <div class="p-3">
+                    <p-button 
+                        label="Agregar Nueva" 
+                        severity="secondary" 
+                        variant="text"
+                        icon="pi pi-plus"
+                        (click)="abrirModalServicios()"
+                        [style]="{ width: '100%' }"
+                        />
+                    </div>
+                </ng-template>
+            </p-select>
+            <label for="id_servicio">Servicio</label>
+        </p-floatlabel>
+    </div>
+
+    <div class="button-confirmar-cancelar" style="gap: 10px;">
+        <button pButton label="Guardar" icon="pi pi-check" (click)="guardarProveedor()"></button>
+        <button pButton label="Cancelar" icon="pi pi-times" class="p-button-secondary" (click)="cerrarModal()"></button>
+    </div>
+</p-dialog>
+
+<!-- Modal Eliminar Proveedor -->
+<p-dialog [(visible)]="modalEliminarVisible" [modal]="true" [closable]="false" [draggable]="false" header="Eliminar Proveedor">
+  <p>¿Estás seguro de que deseas eliminar el proveedor <strong>{{ proveedorModal.nombre_empresa }}</strong>? Esta acción no se puede deshacer.</p>
+  <div class="button-confirmar-cancelar" style="gap: 10px;">
+    <button pButton label="Eliminar" icon="pi pi-check" (click)="eliminarProveedor()"></button>
+    <button pButton label="Cancelar" icon="pi pi-times" class="p-button-secondary" (click)="cerrarModalEliminar()"></button>
+  </div>
+</p-dialog>
+
+<!-- Modal Principal de Servicios -->
+<p-dialog 
+    [(visible)]="modalServiciosVisible" 
+    [modal]="true" 
+    [style]="{ width: '70vw', height: '80vh' }"
+    [draggable]="false" 
+    header="Gestión de Servicios"
+    appendTo="body"
+>
+    <div style="width: 100%; height: 100%; overflow-y: auto;">
+        <!-- Buscador + botón agregar -->
+        <div style="width: 90%; margin: auto; padding: 2% 0; display:flex; justify-content:space-between;">
+            <input pInputText [(ngModel)]="busquedaServicio" placeholder="Buscar servicio..." (input)="filtrarServicios()" style="width:60%;" />
+            <button pButton label="Agregar Servicio" icon="pi pi-plus" (click)="abrirModalAgregarServicio()"></button>
+        </div>
+
+        <!-- Tabla de servicios -->
+        <div style="width: 90%; margin:auto;">
+            <p-table [value]="serviciosFiltrados">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Acciones</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-servicio>
+                    <tr>
+                        <td>{{ servicio.nombre }}</td>
+                        <td>
+                            <button pButton icon="pi pi-eye" class="p-button-text" (click)="abrirModalVerServicio(servicio)"></button>
+                            <button pButton icon="pi pi-pencil" class="p-button-text" (click)="abrirModalEditarServicio(servicio)"></button>
+                            <button pButton icon="pi pi-trash" class="p-button-text" (click)="abrirModalEliminarServicio(servicio)"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+
+    <!-- Modal Agregar / Editar -->
+    <p-dialog [(visible)]="modalAgregarEditarVisible" [modal]="true" [closable]="false" header="{{ modalTituloServicio }}" appendTo="body">
+        <div class="p-fluid" style="display:flex; flex-direction:column; gap:15px;">
+            <p-floatLabel variant="in">
+                <input pInputText [(ngModel)]="servicioModal.nombre" required />
+                <label>Nombre</label>
+            </p-floatLabel>
+        </div>
+        <div class="button-confirmar-cancelar" style="gap:10px; margin-top:10px;">
+            <button pButton label="Guardar" icon="pi pi-check" (click)="guardarServicio()"></button>
+            <button pButton label="Cancelar" icon="pi pi-times" class="p-button-secondary" (click)="cerrarModalAgregarEditar()"></button>
+        </div>
+    </p-dialog>
+
+    <!-- Modal Ver -->
+    <p-dialog [(visible)]="modalVerVisible" [modal]="true" [closable]="false" header="Ver Servicio" appendTo="body">
+        <div class="p-fluid no-gray">
+            <p-floatLabel variant="in">
+                <input pInputText [value]="servicioSeleccionado.nombre" disabled />
+                <label>Nombre</label>
+            </p-floatLabel>
+        </div>
+        <div class="button-confirmar-cancelar" style="margin-top:10px;">
+            <button pButton label="Cerrar" icon="pi pi-times" (click)="cerrarModalVer()"></button>
+        </div>
+    </p-dialog>
+
+    <!-- Modal Eliminar -->
+    <p-dialog [(visible)]="modalEliminarVisibleServicio" [modal]="true" [closable]="false" header="Eliminar Servicio" appendTo="body">
+        <p>¿Deseas eliminar el servicio <strong>{{ servicioSeleccionado.nombre }}</strong>?</p>
+        <div class="button-confirmar-cancelar" style="gap:10px; margin-top:10px;">
+            <button pButton label="Eliminar" icon="pi pi-check" (click)="eliminarServicio()"></button>
+            <button pButton label="Cancelar" icon="pi pi-times" class="p-button-secondary" (click)="cerrarModalEliminarServicio()"></button>
+        </div>
+    </p-dialog>
+</p-dialog>

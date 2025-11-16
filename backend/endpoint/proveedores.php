@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-require_once 'componentes/proveedores.php';
+require_once '../componentes/proveedores.php';
 
 $proveedores = new Proveedores();
 $accion = $_GET['accion'] ?? '';

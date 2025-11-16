@@ -18,10 +18,23 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 
+import { DrawerModule } from 'primeng/drawer';
+import { Recursos } from './recursos/recursos';
+import { CardModule } from 'primeng/card';
+import { DialogModule } from 'primeng/dialog';
+import { ToastModule } from 'primeng/toast';
+import { SelectModule } from 'primeng/select'; 
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { MessageModule } from 'primeng/message';
+import { DatePickerModule } from 'primeng/datepicker';
+import { Proveedores } from './proveedores/proveedores';
+
 @NgModule({
   declarations: [
     App,
-    Roles
+    Roles,
+    Recursos,
+    Proveedores
   ],
   imports: [
     BrowserModule,
@@ -31,7 +44,17 @@ import { TableModule } from 'primeng/table';
     // PrimeNG Modules
     InputTextModule,
     ButtonModule,
-    TableModule
+    TableModule,
+    DrawerModule,
+    CardModule,
+    ButtonModule,
+    DialogModule,
+    ToastModule,
+    SelectModule,
+    InputTextModule,
+    FloatLabelModule,
+    MessageModule,
+    DatePickerModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
