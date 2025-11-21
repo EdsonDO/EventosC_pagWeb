@@ -1,11 +1,15 @@
--- | EVENTOS_C - PROYECTO DE LENGUAJE DE PROGRAMACIÓN | --
-CREATE DATABASE Eventos_C;
-USE Eventos_C;
+CREATE DATABASE EventosC;
+USE EventosC;
 
 -- | TABLAS REGULARES | --
 CREATE TABLE Roles(
 	id int primary key auto_increment,
 	nombre varchar(50) not null unique
+);
+
+CREATE TABLE Servicios (
+    id int primary key auto_increment,
+    nombre varchar(100) not null unique
 );
 
 CREATE TABLE Proveedores(
@@ -15,7 +19,10 @@ CREATE TABLE Proveedores(
     telefono varchar(9) not null unique,
     email varchar(150) not null unique,
     direccion varchar(150) not null,
-    estado ENUM ('Disponible', 'No Disponible', 'En Uso') DEFAULT ('Disponible')
+    estado ENUM ('Disponible', 'No disponible', 'Ocupado') DEFAULT ('Disponible'),
+    id_servicio int,
+    
+    foreign key (id_servicio) references Servicios(id)
 );
 
 CREATE TABLE Cliente(
@@ -23,7 +30,10 @@ CREATE TABLE Cliente(
     nombre varchar(100) not null,
     apellidos varchar(100) not null,
     telefono varchar(9) not null,
-    dni varchar(8) not null unique
+    correo varchar(150) not null,
+    fecha_inscripcion date default(now()),
+    dni varchar(8) not null unique,
+    estado varchar(20) not null
 );
 
 CREATE TABLE Evento(
@@ -83,7 +93,7 @@ CREATE TABLE Recursos(
     nombre_recurso varchar(100) not null,
     cantidad int default(0),
     ubicacion varchar(50),
-    estado ENUM('Disponible', 'Bajo en Stock', 'No disponible', 'En Mantenimiento') default('Disponible'),
+    estado ENUM('Disponible', 'No disponible', 'En uso', 'Mantenimiento') default('Disponible'),
     prox_mantenimiento date,
     id_tipo int,
     
