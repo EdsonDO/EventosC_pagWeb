@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-require_once 'componentes/tiporecurso.php';
+require_once '../componentes/tiporecurso.php';
 require_once '../validations/tiporecurso.php';
 
 $tipoRecurso = new TipoRecurso();

@@ -1,0 +1,381 @@
+<!-- TARJETAS RESUMEN -->
+<div style="
+  width: 90%; 
+  margin: auto; 
+  display: flex; 
+  gap: 20px; 
+  justify-content: space-between;
+  margin-top: 20px;
+">
+
+  <!-- TOTAL -->
+  <div style="
+    flex: 1;
+    background: #F8FAFC;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  ">
+    <!-- Columna izquierda -->
+    <div style="text-align: left;">
+      <i class="pi pi-box" style="font-size: 2.5rem; color: #334155;"></i>
+      <div style="font-weight: bold; font-size: 16px; margin-top: 8px;">
+        Total Recursos
+      </div>
+    </div>
+
+    <!-- Columna derecha -->
+    <div style="font-size: 32px; font-weight: bold; color: #334155;">
+      {{ totalRecursos }}
+    </div>
+  </div>
+
+  <!-- DISPONIBLES -->
+  <div style="
+    flex: 1;
+    background: #DCFCE7;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  ">
+    <div>
+      <i class="pi pi-check-circle" style="font-size: 2.5rem; color: #22C55E;"></i>
+      <div style="font-weight: bold; font-size: 16px; margin-top: 8px; color: #22C55E;">
+        Disponibles
+      </div>
+    </div>
+
+    <div style="font-size: 32px; font-weight: bold; color: #22C55E;">
+      {{ totalDisponibles }}
+    </div>
+  </div>
+
+  <!-- EN USO -->
+  <div style="
+    flex: 1;
+    background: #DBEAFE;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  ">
+    <div>
+      <i class="pi pi-info-circle" style="font-size: 2.5rem; color: #3B82F6;"></i>
+      <div style="font-weight: bold; font-size: 16px; margin-top: 8px; color: #3B82F6;">
+        En Uso
+      </div>
+    </div>
+
+    <div style="font-size: 32px; font-weight: bold; color: #3B82F6;">
+      {{ totalEnUso }}
+    </div>
+  </div>
+
+  <!-- MANTENIMIENTO -->
+  <div style="
+    flex: 1;
+    background: #FEF9C3;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  ">
+    <div>
+      <i class="pi pi-wrench" style="font-size: 2.5rem; color: #F59E0B;"></i>
+      <div style="font-weight: bold; font-size: 16px; margin-top: 8px; color: #F59E0B;">
+        Mantenimiento
+      </div>
+    </div>
+
+    <div style="font-size: 32px; font-weight: bold; color: #F59E0B;">
+      {{ totalMantenimiento }}
+    </div>
+  </div>
+
+</div>
+
+<div style="width: 90%; margin: auto; padding: 3% 0;">
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px;">
+    <!-- Búsqueda -->
+    <div style="flex: 1;">
+        <input
+            pInputText
+            [(ngModel)]="busqueda"
+            placeholder="Buscar recurso..."
+            (input)="filtrar()"
+            style="width: 100%; padding: 8px; border-radius: 4px;"
+        />
+    </div>
+
+    <!-- Filtro por tipo -->
+    <p-select
+        [options]="tipos"
+        optionLabel="nombre"
+        optionValue="id"
+        [(ngModel)]="filtroTipo"
+        [showClear]="true"
+        placeholder="Filtrar por tipo"
+        (onChange)="filtrar()"
+        appendTo="body"
+    ></p-select>
+
+    <!-- Filtro por estado -->
+    <p-select
+        [options]="estados"
+        [(ngModel)]="filtroEstado"
+        [showClear]="true"
+        placeholder="Filtrar por estado"
+        (onChange)="filtrar()"
+        appendTo="body"
+    ></p-select>
+
+    <!-- Botón Agregar -->
+    <button pButton label="Agregar Recurso" icon="pi pi-plus" (click)="abrirModalAgregar()"></button>
+  </div>
+</div>
+
+<div style="width: 90%; margin: auto; display: flex; gap: 20px;">
+  <p-card *ngFor="let recurso of recursosFiltrados" styleClass="recurso-card" [style]="{'width':'350px'}">
+
+    <!-- Encabezado: ícono, nombre y estado -->
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px;">
+        <!-- Icono grande -->
+        <i class="pi pi-box" style="font-size: 2.5rem"></i>
+
+        <!-- Nombre grande -->
+        <div style="flex: 1; font-weight: bold;">
+          {{ recurso.nombre_recurso }}<br> (RES-{{ recurso.id | number:'3.0' }})
+        </div>
+
+        <!-- Estado tipo toast -->
+        <p-message 
+            [severity]="
+                recurso.estado === 'Disponible' ? 'success' :
+                recurso.estado === 'No disponible' ? 'error' :
+                recurso.estado === 'En uso' ? 'info' :
+                recurso.estado === 'Mantenimiento' ? 'warn' : 'secondary'
+                "
+            [text]="recurso.estado"
+            [icon]="
+                recurso.estado === 'Disponible' ? 'pi pi-check-circle' :
+                recurso.estado === 'No disponible' ? 'pi pi-times-circle' :
+                recurso.estado === 'En uso' ? 'pi pi-info-circle' :
+                recurso.estado === 'Mantenimiento' ? 'pi pi-hammer' :
+                'pi pi-exclamation-triangle'
+                "
+            size="small"
+        ></p-message>
+        
+    </div>
+
+    <!-- Detalles en dos columnas -->
+    <div style="display: grid; grid-template-columns: 120px auto; row-gap: 10px; font-size: 14px; margin: 15px 0;">
+      <div><strong>Tipo:</strong></div>
+      <div style="text-align: right;">{{ getNombreTipo(recurso.id_tipo) }}</div>
+
+      <div><strong>Cantidad:</strong></div>
+      <div style="text-align: right;">{{ recurso.cantidad }}</div>
+
+      <div><strong>Ubicación:</strong></div>
+      <div style="text-align: right;">{{ recurso.ubicacion }}</div>
+
+      <div><strong>Próximo Mant.:</strong></div>
+      <div style="text-align: right;">{{ recurso.prox_mantenimiento | date:'dd-MM-yyyy' }}</div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div style="display: flex; gap: 5px;">
+        <button 
+            pButton 
+            label="Editar" 
+            icon="pi pi-pencil" 
+            severity="contrast"
+            class="p-button-outlined"
+            (click)="abrirModalEditar(recurso)" 
+            style="flex: 3;"
+        ></button>
+        <button 
+            pButton 
+            icon="pi pi-trash" 
+            severity="danger"
+            class="p-button-danger p-button-outlined"
+            (click)="abrirModalEliminar(recurso)" 
+            style="flex: 1; "
+        ></button>
+    </div>
+
+  </p-card>
+</div>
+
+<!-- Modal Agregar / Editar Recurso -->
+<p-dialog 
+    [(visible)]="modalVisible" 
+    [modal]="true" 
+    [closable]="false" 
+    [draggable]="false" 
+    [header]="modalTitulo"
+>
+    <div class="p-fluid" style="display: flex; flex-direction: column; gap: 15px;">
+        <p-floatLabel variant="in">
+            <input id="nombre" type="text" pInputText [(ngModel)]="recursoModal.nombre_recurso" required />
+            <label for="nombre">Nombre del recurso</label>
+        </p-floatLabel>
+
+        <p-floatLabel variant="in">
+            <input id="cantidad" type="number" pInputText [(ngModel)]="recursoModal.cantidad" required />
+            <label for="cantidad">Cantidad</label>
+        </p-floatLabel>
+
+        <p-floatLabel variant="in">
+            <input id="ubicacion" type="text" pInputText [(ngModel)]="recursoModal.ubicacion" />
+            <label for="ubicacion">Ubicación</label>
+        </p-floatLabel>
+
+        <p-floatlabel variant="in">
+            <p-select 
+                [options]="tipos" 
+                [(ngModel)]="recursoModal.id_tipo"
+                optionLabel="nombre" 
+                optionValue="id"
+                style="width: 100%;" 
+                appendTo="body"
+            >
+                <ng-template #footer>
+                    <div class="p-3">
+                    <p-button 
+                        label="Agregar Nueva" 
+                        severity="secondary" 
+                        variant="text"
+                        icon="pi pi-plus"
+                        (click)="abrirModalTipoRecurso()"
+                        [style]="{ width: '100%' }"
+                        />
+                    </div>
+                </ng-template>
+            </p-select>
+            <label for="tipo_recurso">Tipo de recurso</label>
+        </p-floatlabel>
+
+        <p-floatlabel variant="in">
+            <p-select 
+                [options]="estados" 
+                [(ngModel)]="recursoModal.estado" 
+                style="width: 100%;" 
+                appendTo="body"
+            ></p-select>
+            <label for="estado">Estado</label>
+        </p-floatlabel>
+        
+        <p-floatLabel variant="in">
+            <p-datePicker 
+                id="prox_mantenimiento"
+                [(ngModel)]="recursoModal.prox_mantenimiento"
+                [dateFormat]="'dd-mm-yy'"
+                showButtonBar="true"
+                placeholder="Selecciona fecha"
+                inputStyleClass="p-inputtext p-component"
+                appendTo="body"
+            ></p-datePicker>
+            <label for="prox_mantenimiento">Próximo mantenimiento</label>
+        </p-floatLabel>
+    </div>
+
+    <div class="button-confirmar-cancelar" style="gap: 10px;">
+        <button pButton label="Guardar" icon="pi pi-check" (click)="guardarRecurso()"></button>
+        <button pButton label="Cancelar" icon="pi pi-times" class="p-button-secondary" (click)="cerrarModal()"></button>
+    </div>
+</p-dialog>
+
+<!-- Modal Eliminar Recurso -->
+<p-dialog [(visible)]="modalEliminarVisible" [modal]="true" [closable]="false" [draggable]="false" header="Eliminar Recurso">
+  <p>¿Estás seguro de que deseas eliminar el recurso <strong>{{ recursoModal.nombre_recurso }}</strong>? Esta acción no se puede deshacer.</p>
+  <div class="button-confirmar-cancelar" style="gap: 10px;">
+    <button pButton label="Eliminar" icon="pi pi-check" (click)="eliminarRecurso()"></button>
+    <button pButton label="Cancelar" icon="pi pi-times" class="p-button-secondary" (click)="cerrarModalEliminar()"></button>
+  </div>
+</p-dialog>
+
+<!-- Modal Tipo Recurso-->
+<p-dialog 
+    [(visible)]="modalTipoRecurso" 
+    [modal]="true" 
+    [style]="{ width: '70vw', height: '80vh' }"
+    [draggable]="false" 
+    header="Gestion de tipos de recursos"
+    appendTo="body"
+>
+    <div style="width: 100%; height: 100%; overflow-y: auto;">
+        <div style="width: 90%; margin: auto; padding: 2% 0; display:flex; justify-content:space-between;">
+            <input pInputText [(ngModel)]="busquedaTipo" placeholder="Buscar tipo de recurso..." (input)="filtrarTipo()" style="width:60%;" />
+            <button pButton label="Agregar Tipo" icon="pi pi-plus" (click)="abrirModalAgregarTipo()"></button>
+        </div>
+
+        <div style="width: 90%; margin:auto;">
+            <p-table [value]="tiposFiltrados">
+                <ng-template pTemplate="header">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Acciones</th>
+                </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-tipo>
+                <tr>
+                    <td>{{ tipo.nombre }}</td>
+                    <td>
+                    <button pButton icon="pi pi-eye" class="p-button-text" (click)="abrirModalVerTipo(tipo)"></button>
+                    <button pButton icon="pi pi-pencil" class="p-button-text" (click)="abrirModalEditarTipo(tipo)"></button>
+                    <button pButton icon="pi pi-trash" class="p-button-text" (click)="abrirModalEliminarTipo(tipo)"></button>
+                    </td>
+                </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    
+
+    <!-- Modal Agregar/Editar -->
+    <p-dialog [(visible)]="modalVisibleTipo" [modal]="true" [closable]="false" header="{{ modalTituloTipo }}">
+    <div class="p-fluid" style="display:flex; flex-direction:column; gap:15px;">
+        <p-floatLabel variant="in">
+            <input pInputText [(ngModel)]="tipoModal.nombre" required />
+            <label>Nombre</label>
+        </p-floatLabel>
+    </div>
+    <div class="button-confirmar-cancelar" style="gap:10px; margin-top:10px;">
+        <button pButton label="Guardar" icon="pi pi-check" (click)="guardarTipo()"></button>
+        <button pButton label="Cancelar" icon="pi pi-times" class="p-button-secondary" (click)="cerrarModalTipo()"></button>
+    </div>
+    </p-dialog>
+
+    <!-- Modal Ver -->
+    <p-dialog [(visible)]="modalVerVisibleTipo" [modal]="true" [closable]="false" header="Ver Tipo de Recurso" appendTo="body">
+    <div class="p-fluid no-gray">
+        <p-floatLabel variant="in">
+            <input pInputText [value]="tipoSeleccionado.nombre" disabled />
+            <label>Nombre</label>
+        </p-floatLabel>
+    </div>
+    <div class="button-confirmar-cancelar">
+        <button pButton label="Cerrar" icon="pi pi-times" (click)="cerrarModalVerTipo()"></button>
+    </div>
+    </p-dialog>
+
+    <!-- Modal Eliminar -->
+    <p-dialog [(visible)]="modalEliminarVisibleTipo" [modal]="true" [closable]="false" header="Eliminar Tipo de Recurso" appendTo="body">
+    <p>¿Deseas eliminar el tipo de recurso <strong>{{ tipoSeleccionado.nombre }}</strong>?</p>
+    <div class="button-confirmar-cancelar" style="gap:10px; margin-top:10px;">
+        <button pButton label="Eliminar" icon="pi pi-check" (click)="eliminarTipo()"></button>
+        <button pButton label="Cancelar" icon="pi pi-times" class="p-button-secondary" (click)="cerrarModalEliminarTipo()"></button>
+    </div>
+    </p-dialog>
+</p-dialog>
