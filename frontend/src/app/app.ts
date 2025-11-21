@@ -91,7 +91,7 @@ export class App {
     this.visibleProfileDrawer = false;
     localStorage.clear();
     sessionStorage.clear();
-    
+
     this.router.navigate(['/logindashboard']);
   }
   toggleDrawer(): void {
@@ -100,13 +100,13 @@ export class App {
 
   activeRoute: string = '';
   currentLabel: string = '';
-  
+
   menuItems = [
     { label: 'Panel General', icon: 'pi pi-th-large', route: '/' },
     { label: 'Reservas', icon: 'pi pi-calendar', route: '/' },
     { label: 'Recursos', icon: 'pi pi-box', route: '/recursos' },
     { label: 'Proveedores', icon: 'pi pi-building', route: '/proveedores' },
-    { label: 'Clientes', icon: 'pi pi-user', route: '/' },
+    { label: 'Clientes', icon: 'pi pi-user', route: '/clientes' },
     { label: 'Pagos', icon: 'pi pi-credit-card', route: '/' },
     { label: 'Notificaciones', icon: 'pi pi-bell', route: '/' },
     { label: 'Configuración', icon: 'pi pi-cog', route: '/' },
@@ -121,7 +121,7 @@ export class App {
     this.router.navigate([route]);
   }
 
-  
+
 
   // Expandir acordeon padre
   toggleGroup(group: AccordionGroup) {

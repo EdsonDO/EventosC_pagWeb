@@ -12,6 +12,9 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { providePrimeNG } from 'primeng/config';
 import MyPreset from './mypreset';
 import { MessageService } from 'primeng/api';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+
 
 // Módulo principal de la aplicación
 import { InputTextModule } from 'primeng/inputtext';
@@ -23,18 +26,20 @@ import { Recursos } from './recursos/recursos';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { ToastModule } from 'primeng/toast';
-import { SelectModule } from 'primeng/select'; 
+import { SelectModule } from 'primeng/select';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { MessageModule } from 'primeng/message';
 import { DatePickerModule } from 'primeng/datepicker';
 import { Proveedores } from './proveedores/proveedores';
+import { Clientes } from './clientes/clientes';
 
 @NgModule({
   declarations: [
     App,
     Roles,
     Recursos,
-    Proveedores
+    Proveedores,
+    Clientes
   ],
   imports: [
     BrowserModule,
@@ -54,7 +59,9 @@ import { Proveedores } from './proveedores/proveedores';
     InputTextModule,
     FloatLabelModule,
     MessageModule,
-    DatePickerModule
+    DatePickerModule,
+    IconFieldModule,
+    InputIconModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
