@@ -11,7 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-require_once 'componentes/pagos.php';
+require_once(__DIR__ . '/../componentes/pagos.php');
+
 
 $pagos = new Pagos();
 $accion = $_GET['accion'] ?? '';

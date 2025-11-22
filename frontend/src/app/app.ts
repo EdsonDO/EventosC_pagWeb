@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { PrimeNG } from 'primeng/config';
+import { Subscription } from 'rxjs';
 
 interface TabButton {
   label: string;
@@ -107,7 +107,8 @@ export class App {
     { label: 'Recursos', icon: 'pi pi-box', route: '/recursos' },
     { label: 'Proveedores', icon: 'pi pi-building', route: '/proveedores' },
     { label: 'Clientes', icon: 'pi pi-user', route: '/clientes' },
-    { label: 'Pagos', icon: 'pi pi-credit-card', route: '/' },
+   // {label: 'Mantenimientos', icon: 'pi pi-user',route:'/mantenimientos'},opcional si quieren implementar
+    { label: 'Pagos', icon: 'pi pi-credit-card', route: '/pagos' },
     { label: 'Notificaciones', icon: 'pi pi-bell', route: '/' },
     { label: 'Configuración', icon: 'pi pi-cog', route: '/' },
   ];
