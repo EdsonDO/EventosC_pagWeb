@@ -1,0 +1,38 @@
+/* Estilo para quitar borde y sombra del panelMenu */
+::ng-deep .p-panelmenu {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* También podrías querer eliminar el borde de los items */
+::ng-deep .p-panelmenu .p-panelmenu-panel {
+  border: none !important;
+}
+
+::ng-deep .menu-section-title {
+  font-weight: bold;
+  text-transform: uppercase;
+  opacity: 1 !important;
+  pointer-events: none;
+  cursor: default;
+  background-color: transparent !important;
+  color: #000 !important;
+}
+
+* {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.menu-btn {
+  width: 100%;
+  justify-content: flex-start;
+  border-radius: 10px;
+  margin: 5px 0;
+  padding: 12px;
+}
+
+.active-btn {
+  background-color: var(--primary-color, #333) !important;
+  color: white !important;
+  font-weight: bold;
+}

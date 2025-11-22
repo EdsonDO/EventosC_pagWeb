@@ -40,8 +40,8 @@ class Proveedores {
     }
         try {
             $stmt = $this->pdo->prepare("
-                INSERT INTO Proveedores (nombre_empresa, nombre_responsable, telefono, email, direccion, estado)
-                VALUES (:nombre_empresa, :nombre_responsable, :telefono, :email, :direccion, :estado)
+                INSERT INTO Proveedores (nombre_empresa, nombre_responsable, telefono, email, direccion, estado, id_servicio)
+                VALUES (:nombre_empresa, :nombre_responsable, :telefono, :email, :direccion, :estado, :id_servicio)
             ");
             $stmt->execute([
                 ':nombre_empresa' => $data['nombre_empresa'],
@@ -49,7 +49,8 @@ class Proveedores {
                 ':telefono' => $data['telefono'],
                 ':email' => $data['email'],
                 ':direccion' => $data['direccion'],
-                ':estado' => $data['estado'] ?? 'Disponible'
+                ':estado' => $data['estado'] ?? 'Disponible',
+                ':id_servicio' => $data['id_servicio']
             ]);
             echo json_encode(['success' => true, 'id' => $this->pdo->lastInsertId()]);
         } catch (PDOException $e) {
@@ -71,7 +72,8 @@ class Proveedores {
                     telefono = :telefono,
                     email = :email,
                     direccion = :direccion,
-                    estado = :estado
+                    estado = :estado,
+                    id_servicio = :id_servicio
                 WHERE id = :id
             ");
             $stmt->execute([
@@ -81,7 +83,8 @@ class Proveedores {
                 ':telefono' => $data['telefono'],
                 ':email' => $data['email'],
                 ':direccion' => $data['direccion'],
-                ':estado' => $data['estado'] ?? 'Disponible'
+                ':estado' => $data['estado'] ?? 'Disponible',
+                ':id_servicio' => $data['id_servicio']
             ]);
             echo json_encode(['success' => true]);
         } catch (PDOException $e) {

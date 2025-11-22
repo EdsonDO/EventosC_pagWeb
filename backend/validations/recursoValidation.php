@@ -24,15 +24,18 @@ class RecursoValidation {
         }
 
      
-        $estados_validos = ['Disponible', 'Bajo en Stock', 'No disponible', 'En Mantenimiento'];
+        $estados_validos = ['Disponible', 'No disponible', 'En uso', 'Mantenimiento'];
         if (!empty($data['estado']) && !in_array($data['estado'], $estados_validos)) {
               $errores['estado'] = 'El estado proporcionado no es válido.';
         }
 
    
         if (!empty($data['prox_mantenimiento'])) {
-            if (!self::validarFecha($data['prox_mantenimiento'])) {
-                 $errores['prox_mantenimiento'] = 'La fecha no tiene el formato válido YYYY-MM-DD.';
+            // Si viene como timestamp o string JS, convertir a formato YYYY-MM-DD
+            $fecha = date('Y-m-d', strtotime($data['prox_mantenimiento']));
+            
+            if (!RecursoValidation::validarFecha($fecha)) {
+                $errores['prox_mantenimiento'] = 'La fecha no tiene el formato válido YYYY-MM-DD.';
             }
         }
 

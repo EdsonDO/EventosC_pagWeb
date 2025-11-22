@@ -1,2 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
 @import "primeicons/primeicons.css";
+
+.button-confirmar-cancelar {
+    margin-top: 20px; 
+    display: flex; 
+    justify-content:space-around
+}
+
+/*MODAL VER GENERAL*/
+.no-gray input:disabled,
+.no-gray textarea:disabled {
+  background-color: transparent !important;
+  color: #000 !important;
+}
+
+.no-gray .p-disabled {
+  background-color: transparent !important;
+  color: #000 !important;
+}
