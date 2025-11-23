@@ -32,4 +32,15 @@ export class PagosService {
   eliminar(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}?accion=eliminar&id=${id}`);
   }
+
+  estadisticas() {
+  return this.http.get<any>(`${this.apiUrl}?accion=estadisticas`);
+}
+listarTiposPago() {
+  return this.http.get<any[]>(`${this.apiUrl}?accion=listarTiposPago`);
+}
+
+listarAdelantos() {
+  return this.http.get<any[]>(`${this.apiUrl}?accion=listarAdelantos`);
+}
 }
