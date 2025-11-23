@@ -42,6 +42,18 @@ switch($accion) {
         $id = $_GET['id'] ?? 0;
         $pagos->eliminar($id);
         break;
+    
+   case 'estadisticas':
+    echo json_encode($pagos->estadisticas());
+    break;
+
+    case 'listarTiposPago':
+    $pagos->listarTiposPago();
+    break;
+
+    case 'listarAdelantos':
+    $pagos->listarAdelantos();
+    break;
 
     default:
         echo json_encode(['error' => 'Acción no válida']);

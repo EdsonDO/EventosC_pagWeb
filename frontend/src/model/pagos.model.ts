@@ -6,4 +6,7 @@ export interface Pago {
   voucer?: string;
   id_tipo_pago?: number;
   id_adelanto?: number;
+
+  tipo_pago_nombre?: string;
+  adelanto_valor?: number | string;
 }
