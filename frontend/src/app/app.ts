@@ -6,20 +6,20 @@ import { Subscription } from 'rxjs';
 interface TabButton {
   label: string;
   icon?: string;
-  route: string; // ruta interna de Angular
+  route: string;
 }
 
 interface Tab {
   title: string;
   active?: boolean;
-  buttons?: TabButton[]; // botones específicos de cada tab
+  buttons?: TabButton[];
 }
 
 interface AccordionGroup {
-  title: string;        // Título del acordeón padre
-  active?: boolean;     // Estado expandido o no
-  button?: ParentButton; // Botón principal del acordeón padre
-  tabs: Tab[];          // Acordeones hijos dentro
+  title: string;
+  active?: boolean;
+  button?: ParentButton;
+  tabs: Tab[];
 }
 
 interface ParentButton {
@@ -40,48 +40,50 @@ export class App {
   isAuthenticated: boolean = false;
   username: string | null = null;
 
-  // Control del drawer
   visibleMenuDrawer: boolean = true;
   visibleProfileDrawer: boolean = false;
 
   private authStatusSubscription: Subscription | null = null;
 
+  activeRoute: string = '';
+  currentLabel: string = '';
+
+  menuItems = [
+    { label: 'Panel General', icon: 'pi pi-th-large', route: '/panel' },
+    { label: 'Reservas', icon: 'pi pi-calendar', route: '/reservas' },
+    { label: 'Recursos', icon: 'pi pi-box', route: '/recursos' },
+    { label: 'Proveedores', icon: 'pi pi-building', route: '/proveedores' },
+    { label: 'Clientes', icon: 'pi pi-user', route: '/clientes' },
+    { label: 'Pagos', icon: 'pi pi-credit-card', route: '/pagos' },
+    { label: 'Notificaciones', icon: 'pi pi-bell', route: '/notificaciones' },
+    { label: 'Configuración', icon: 'pi pi-cog', route: '/configuracion' },
+  ];
+
   constructor(
     private router: Router,
     private primeng: PrimeNG,
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.primeng.setTranslation({
       firstDayOfWeek: 1,
-      dayNames: [
-        "Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"
-      ],
+      dayNames: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
       dayNamesShort: ["D", "L", "M", "X", "J", "V", "S"],
       dayNamesMin: ["D", "L", "M", "X", "J", "V", "S"],
-      monthNames: [
-        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-      ],
-      monthNamesShort: [
-        "Ene", "Feb", "Mar", "Abr", "May", "Jun",
-        "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
-      ],
+      monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+      monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
       today: "Hoy",
       clear: "Limpiar"
     });
 
     this.router.events.subscribe(() => {
       this.activeRoute = this.router.url;
-
       const found = this.menuItems.find(item => item.route === this.activeRoute);
-      this.currentLabel = found ? found.label : '';
+      this.currentLabel = found ? found.label : 'Panel General';
     });
   }
 
   ngOnDestroy() {
-    // Limpieza de la suscripción cuando el componente se destruye
     if (this.authStatusSubscription) {
       this.authStatusSubscription.unsubscribe();
     }
@@ -91,52 +93,29 @@ export class App {
     this.visibleProfileDrawer = false;
     localStorage.clear();
     sessionStorage.clear();
-
     this.router.navigate(['/logindashboard']);
   }
+
   toggleDrawer(): void {
     this.visibleMenuDrawer = !this.visibleMenuDrawer;
   }
 
-  activeRoute: string = '';
-  currentLabel: string = '';
-
-  menuItems = [
-    { label: 'Panel General', icon: 'pi pi-th-large', route: '/' },
-    { label: 'Reservas', icon: 'pi pi-calendar', route: '/' },
-    { label: 'Recursos', icon: 'pi pi-box', route: '/recursos' },
-    { label: 'Proveedores', icon: 'pi pi-building', route: '/proveedores' },
-    { label: 'Clientes', icon: 'pi pi-user', route: '/clientes' },
-   // {label: 'Mantenimientos', icon: 'pi pi-user',route:'/mantenimientos'},opcional si quieren implementar
-    { label: 'Pagos', icon: 'pi pi-credit-card', route: '/pagos' },
-    { label: 'Notificaciones', icon: 'pi pi-bell', route: '/' },
-    { label: 'Configuración', icon: 'pi pi-cog', route: '/' },
-  ];
-
   setActive(route: string) {
     this.activeRoute = route;
-
     const found = this.menuItems.find(item => item.route === route);
     this.currentLabel = found ? found.label : '';
-
     this.router.navigate([route]);
   }
 
-
-
-  // Expandir acordeon padre
   toggleGroup(group: AccordionGroup) {
     group.active = !group.active;
   }
 
-  // Expandir acordeon hijo
   toggleTab(tab: Tab) {
     tab.active = !tab.active;
   }
 
-  // Navegación al hacer clic en un botón
   navigate(route: string) {
     this.router.navigate([route]);
   }
-
 }

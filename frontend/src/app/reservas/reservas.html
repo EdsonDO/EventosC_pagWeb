@@ -1,0 +1,78 @@
+<div class="reservas-container">
+    
+    <div class="form-section">
+        <p-card header="Nueva Reserva" subheader="Ingresa los datos para registrar">
+            <ng-template pTemplate="content">
+                <div class="form-grid">
+                    <p-floatLabel>
+                        <input pInputText id="fecha" [(ngModel)]="nuevaReserva.fecha" type="date" class="full-width" />
+                        <label for="fecha">Fecha</label>
+                    </p-floatLabel>
+
+                    <p-floatLabel>
+                        <p-inputNumber 
+                            id="asistentes" 
+                            [(ngModel)]="nuevaReserva.numero_asistentes" 
+                            [showButtons]="true" 
+                            buttonLayout="horizontal" 
+                            inputId="horizontal" 
+                            spinnerMode="horizontal" 
+                            [step]="1"
+                            decrementButtonClass="p-button-secondary"
+                            incrementButtonClass="p-button-secondary" 
+                            incrementButtonIcon="pi pi-plus" 
+                            decrementButtonIcon="pi pi-minus"
+                            class="full-width">
+                        </p-inputNumber>
+                        <label for="asistentes">Número de Asistentes</label>
+                    </p-floatLabel>
+
+                    <p-floatLabel>
+                        <p-inputNumber 
+                            id="total" 
+                            [(ngModel)]="nuevaReserva.total" 
+                            mode="currency" 
+                            currency="USD" 
+                            locale="en-US"
+                            class="full-width">
+                        </p-inputNumber>
+                        <label for="total">Total ($)</label>
+                    </p-floatLabel>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <p-button label="Guardar Reserva" icon="pi pi-save" (onClick)="guardar()" styleClass="p-button-raised p-button-primary"></p-button>
+            </ng-template>
+        </p-card>
+    </div>
+
+    <div class="table-section">
+        <p-card header="Historial de Reservas">
+            <p-table [value]="reservas" [tableStyle]="{ 'min-width': '50rem' }" styleClass="p-datatable-striped">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Asistentes</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-r>
+                    <tr>
+                        <td>{{ r.id }}</td>
+                        <td>{{ r.fecha }}</td>
+                        <td>{{ r.numero_asistentes }}</td>
+                        <td>{{ r.total | currency }}</td>
+                        <td>
+                            <span [ngClass]="{'estado-pagar': r.estado === 'Por Pagar', 'estado-ok': r.estado !== 'Por Pagar'}">
+                                {{ r.estado }}
+                            </span>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-card>
+    </div>
+</div>
