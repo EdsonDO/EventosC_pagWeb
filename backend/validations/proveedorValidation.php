@@ -26,7 +26,7 @@ class ProveedorValidation {
         } elseif (!preg_match('/^[0-9]{9}$/', $data['telefono'])) {
             $errores['telefono'] = 'El teléfono debe tener exactamente 9 dígitos.';
       
-
+        }
 
 
         if (empty($data['email'])) {
@@ -44,5 +44,5 @@ class ProveedorValidation {
 
         return $errores;
     }
-}
+
 }

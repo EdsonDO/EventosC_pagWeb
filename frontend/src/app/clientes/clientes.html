@@ -1,0 +1,278 @@
+<div style="
+  width: 90%;
+  margin: auto;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  margin-top: 20px;
+">
+
+  <!-- TOTAL CLIENTES -->
+  <div style="
+    flex: 1;
+    background: #F8FAFC;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.1);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: baseline;
+  ">
+    <!-- Total Clientes -->
+    <div style="text-align: left;">
+      <div style="font-weight: bold; font-size: 16px; margin-top: 8px; margin: 0;">
+        <p style="margin: 10px 0 15px 0px;">Total Clientes</p>
+      </div>
+    </div>
+    <div style="font-size: 16px; font-weight: normal; color: #334155;">
+      {{ totalClientes }}
+    </div>
+  </div>
+
+  <!-- CLIENTES VIP -->
+  <div style="
+    flex: 1;
+    background: #F8FAFC;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.1);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: baseline;
+  ">
+    <!-- Clientes VIP -->
+    <div style="text-align: left;">
+      <div style="font-weight: bold; font-size: 16px; margin-top: 8px; margin: 0;">
+        <p style="margin: 10px 0 15px 0px;">Clientes VIP</p>
+      </div>
+    </div>
+    <div style="font-size: 16px; font-weight: normal; color: #334155;">
+      {{ clientesVip}}
+    </div>
+  </div>
+
+  <!-- EVENTOS PRÓXIMOS -->
+  <div style="
+    flex: 1;
+    background: #F8FAFC;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.1);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: baseline;
+  ">
+    <!-- Eventos Próximos -->
+    <div style="text-align: left;">
+      <div style="font-weight: bold; font-size: 16px; margin-top: 8px; margin: 0;">
+        <p style="margin: 10px 0 15px 0px;">Eventos Próximos</p>
+      </div>
+    </div>
+    <div style="font-size: 16px; font-weight: normal; color: #334155;">
+      SIN ASIGNAR
+    </div>
+  </div>
+
+  <!-- INGRESOS TOTALES -->
+  <div style="
+    flex: 1;
+    background: #F8FAFC;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.1);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: baseline;
+  ">
+    <!-- Ingresos Totales -->
+    <div style="text-align: left;">
+      <div style="font-weight: bold; font-size: 16px; margin-top: 8px; margin: 0;">
+        <p style="margin: 10px 0 15px 0px;">Ingresos Totales</p>
+      </div>
+    </div>
+    <div style="font-size: 16px; font-weight: normal; color: #334155;">
+      SIN ASIGNAR
+    </div>
+  </div>
+
+</div>
+
+<div style="width: 90%; margin: auto; padding: 3% 0;">
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px;">
+    <!-- Búsqueda -->
+    <div style="flex: 1;">
+      <p-iconfield>
+        <p-inputicon class="pi pi-search" />
+        <input pInputText [(ngModel)]="busqueda" placeholder="Buscar cliente..." (input)="filtrar()"
+          style="width: 100%; padding: 8px; border-radius: 4px; padding-left: 35px;" />
+      </p-iconfield>
+    </div>
+    <!-- Filtro por estado -->
+    <p-select [options]="estados" [(ngModel)]="filtroEstado" [showClear]="true" placeholder="Filtrar por estado"
+      (onChange)="filtrar()" appendTo="body"></p-select>
+    <button pButton label="Agregar Cliente" icon="pi pi-plus"  (click)="abrirModalAgregar()" severity="success"></button>
+  </div>
+
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 90%; margin: 20px auto;">
+
+  <p-card *ngFor="let cliente of clientesFiltrados" styleClass="cliente-card shadow-2"
+    [style]="{'border-radius': '12px', 'overflow': 'hidden', 'border': '1px solid #e5e7eb'}">
+
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px;">
+      <div style="display: flex; gap: 12px;">
+        <div
+          style="width: 45px; height: 45px; background-color: #f3f4f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #4b5563;">
+          <i class="pi pi-user" style="font-size: 1.5rem"></i>
+        </div>
+
+        <div style="display: flex; flex-direction: column; justify-content: center; width: 80%;">
+          <span style="font-weight: 700; font-size: 1.1rem; color: #1f2937;">
+            {{ nombreFormateado(cliente.nombre) }} {{ cliente.apellidos }}
+          </span>
+          <span style="font-size: 0.85rem; color: #9ca3af; margin-top: 5px;">DNI: {{ cliente.dni }}</span>
+        </div>
+      </div>
+
+      <p-message [severity]="
+                cliente.estado === 'Activo' ? 'success' :
+                cliente.estado === 'Inactivo' ? 'error' :
+                cliente.estado === 'Mantenimiento' ? 'warn' : 'info'
+                " [text]="cliente.estado"></p-message>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #f3f4f6; margin: 0 0 15px 0;">
+
+    <div style="display: flex; flex-direction: column; gap: 5px; margin-bottom: 20px;">
+
+      <div style="display: flex; align-items: center; gap: 12px; color: #4b5563;">
+        <div
+          style="width: 32px; height: 32px; border-radius: 8px; background-color: #eff6ff; display: flex; align-items: center; justify-content: center">
+          <i class="pi pi-envelope" style="font-size: 0.9rem"></i>
+        </div>
+        <span style="font-size: 0.9rem;">{{ cliente.correo.toLowerCase() }}</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 12px; color: #4b5563;">
+        <div
+          style="width: 32px; height: 32px; border-radius: 8px; background-color: #f0fdf4; display: flex; align-items: center; justify-content: center">
+          <i class="pi pi-phone" style="font-size: 0.9rem"></i>
+        </div>
+        <span style="font-size: 0.9rem;">+51 {{ cliente.telefono }}</span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 12px; color: #4b5563;">
+        <div
+          style="width: 32px; height: 32px; border-radius: 8px; background-color: #fdf2f8; display: flex; align-items: center; justify-content: center">
+          <i class="pi pi-calendar" style="font-size: 0.9rem"></i>
+        </div>
+        <span style="font-size: 0.9rem;">{{ cliente.fecha_inscripcion }}</span>
+      </div>
+
+      <hr style="border: 0.5px solid rgba(0,0,0,0.1); width: 100%; margin-bottom: 8px;">
+
+      <div
+        style="display: flex; align-items: center; gap: 12px; color: #4b5563; justify-content: space-between; margin-bottom: 8px;">
+        <span style="font-size: 0.9rem;">Total de Eventos:</span>
+        <span style="font-size: 0.9rem;">SIN ASIGNAR</span>
+      </div>
+
+      <div
+        style="display: flex; align-items: center; gap: 12px; color: #4b5563; justify-content: space-between; margin-bottom: 8px;">
+        <span style="font-size: 0.9rem;">Próximos eventos:</span>
+        <span style="font-size: 0.9rem;">SIN ASIGNAR</span>
+      </div>
+
+      <div
+        style="display: flex; align-items: center; gap: 12px; color: #4b5563; justify-content: space-between; margin-bottom: 8px;">
+        <span style="font-size: 0.9rem;">Total gastado:</span>
+        <span style="font-size: 0.9rem;">SIN ASIGNAR</span>
+      </div>
+
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div style="display: flex; gap: 10px; width: 100%;">
+        <button pButton label="Editar" icon="pi pi-pencil" class="p-button-outlined p-button-warn" (click)="abrirModalEditar(cliente)"
+          style="flex: 1; border-radius: 8px;" severity="warn"></button>
+        <button pButton icon="pi pi-trash" class="p-button-outlined p-button-danger" (click)="abrirModalEliminar(cliente)"
+          style="width: 50px; border-radius: 8px;"></button>
+      </div>
+      <div style="display: flex; gap: 10px; width: 100%; margin-top: 7px;">
+        <button pButton label="Ver Historial" icon="pi pi-history" class="p-button-outlined p-button-info"
+          style="flex: 1; border-radius: 8px;" severity="info"></button>
+      </div>
+    </ng-template>
+
+  </p-card>
+
+</div>
+
+<!-- Modal Agregar / Editar Recurso -->
+<p-dialog
+    [(visible)]="modalVisible"
+    [modal]="true"
+    [closable]="false"
+    [draggable]="false"
+    [header]="modalTitulo"
+>
+    <div class="p-fluid" style="display: flex; flex-direction: column; gap: 15px;">
+        <p-floatLabel variant="in">
+            <input id="nombre" type="text" pInputText [(ngModel)]="clienteModal.nombre" required />
+            <label for="nombre">Nombres del Cliente</label>
+        </p-floatLabel>
+
+        <p-floatLabel variant="in">
+            <input id="apellidos" type="text" pInputText [(ngModel)]="clienteModal.apellidos" required />
+            <label for="apellidos">Apellidos del Cliente</label>
+        </p-floatLabel>
+
+        <p-floatLabel variant="in">
+            <input id="correo" type="email" pInputText [(ngModel)]="clienteModal.correo" required />
+            <label for="correo">Correo Electrónico</label>
+        </p-floatLabel>
+
+        <p-floatLabel variant="in">
+            <input id="telefono" type="text" pInputText [(ngModel)]="clienteModal.telefono" required />
+            <label for="telefono">Número de Teléfono</label>
+        </p-floatLabel>
+
+        <p-floatLabel variant="in">
+            <input id="dni" type="text" pInputText [(ngModel)]="clienteModal.dni" required />
+            <label for="dni">Documento Nacional de Identidad (DNI)</label>
+        </p-floatLabel>
+
+        <p-floatlabel variant="in">
+            <p-select
+                [options]="estados"
+                [(ngModel)]="clienteModal.estado"
+                style="width: 100%;"
+                appendTo="body"
+            ></p-select>
+            <label for="estado">Estado</label>
+        </p-floatlabel>
+    </div>
+
+    <div class="button-confirmar-cancelar" style="gap: 10px;">
+        <button pButton label="Guardar" icon="pi pi-check" (click)="guardarCliente()"></button>
+        <button pButton label="Cancelar" icon="pi pi-times" class="p-button-secondary" (click)="cerrarModal()"></button>
+    </div>
+</p-dialog>
+
+<!-- Modal Eliminar Recurso -->
+<p-dialog [(visible)]="modalEliminarVisible" [modal]="true" [closable]="false" [draggable]="false" header="Eliminar Cliente">
+  <p>¿Estás seguro de que deseas eliminar el cliente <strong>{{ clienteModal.nombre }} {{ clienteModal.apellidos}}</strong>? Esta acción no se puede deshacer.</p>
+  <div class="button-confirmar-cancelar" style="gap: 10px;">
+    <button pButton label="Eliminar" icon="pi pi-check" (click)="eliminarCliente()"></button>
+    <button pButton label="Cancelar" icon="pi pi-times" class="p-button-secondary" (click)="cerrarModalEliminar()"></button>
+  </div>
+</p-dialog>

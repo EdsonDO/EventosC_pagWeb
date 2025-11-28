@@ -1,0 +1,89 @@
+<div class="card">
+
+    <h2>Mantenimientos</h2>
+
+    <button pButton label="Nuevo Mantenimiento" icon="pi pi-plus"
+            (click)="nuevo()"></button>
+
+    <p-table [value]="lista" class="mt-3">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Fecha</th>
+                <th>Costo</th>
+                <th>Descripción</th>
+                <th>Próx. Mantenimiento</th>
+                <th>ID Recurso</th>
+                <th>Acciones</th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-row>
+            <tr>
+                <td>{{ row.fecha }}</td>
+                <td>{{ row.costo }}</td>
+                <td>{{ row.descripcion }}</td>
+                <td>{{ row.prox_mantenimiento }}</td>
+                <td>{{ row.id_recursos }}</td>
+                <td>
+                    <button pButton icon="pi pi-pencil" class="p-button-text"
+                            (click)="editar(row)"></button>
+
+                    <button pButton icon="pi pi-trash" class="p-button-danger p-button-text"
+                            (click)="eliminar(row.id!)"></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+
+<!-- DIALOG -->
+<p-dialog header="Mantenimiento" [(visible)]="mostrarDialog" [modal]="true" [style]="{width:'450px'}">
+
+    <form [formGroup]="form" class="p-fluid">
+
+        <div class="field">
+            <label>Fecha</label>
+            <input type="date" pInputText formControlName="fecha">
+        </div>
+
+        <div class="field">
+            <label>Costo</label>
+            <input type="number" pInputText formControlName="costo">
+        </div>
+
+        <div class="field">
+            <label>Descripción</label>
+            <textarea pInputTextarea formControlName="descripcion"></textarea>
+        </div>
+
+        <div class="field">
+            <label>Próximo mantenimiento</label>
+            <input type="date" pInputText formControlName="prox_mantenimiento">
+        </div>
+
+        <div class="field">
+            <label>ID Recurso</label>
+            <input type="number" pInputText formControlName="id_recursos">
+        </div>
+
+    </form>
+
+    <ng-template pTemplate="footer">
+    <button 
+        pButton 
+        label="Cancelar"
+        class="p-button-text p-button-secondary"
+        (click)="mostrarDialog = false">
+    </button>
+
+    <button 
+        pButton 
+        label="Guardar"
+        icon="pi pi-check"
+        (click)="guardar()"
+        [disabled]="form.invalid">
+    </button>
+</ng-template>
+
+</p-dialog>

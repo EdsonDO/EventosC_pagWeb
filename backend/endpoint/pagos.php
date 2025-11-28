@@ -11,7 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-require_once 'componentes/pagos.php';
+require_once(__DIR__ . '/../componentes/pagos.php');
+
 
 $pagos = new Pagos();
 $accion = $_GET['accion'] ?? '';
@@ -41,6 +42,18 @@ switch($accion) {
         $id = $_GET['id'] ?? 0;
         $pagos->eliminar($id);
         break;
+    
+   case 'estadisticas':
+    echo json_encode($pagos->estadisticas());
+    break;
+
+    case 'listarTiposPago':
+    $pagos->listarTiposPago();
+    break;
+
+    case 'listarAdelantos':
+    $pagos->listarAdelantos();
+    break;
 
     default:
         echo json_encode(['error' => 'Acción no válida']);

@@ -10,21 +10,25 @@ class Pagos {
         $this->pdo = $db->iniciar();
     }
 
-    public function listar() {
-        try {
-            $stmt = $this->pdo->query("
-                SELECT p.*, tp.nombre AS tipo_pago, a.valor AS adelanto
-                FROM Pagos p
-                LEFT JOIN Tipo_Pago tp ON p.id_tipo_pago = tp.id
-                LEFT JOIN Adelanto a ON p.id_adelanto = a.id
-            ");
-            $pagos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            echo json_encode($pagos);
-        } catch (PDOException $e) {
-            http_response_code(500);
-            echo json_encode(['error' => $e->getMessage()]);
-        }
-    }
+  public function listar() {
+    $sql = "SELECT 
+                p.id,
+                p.numero_tarjeta,
+                p.fecha_vencimiento,
+                p.cvv,
+                p.voucer,
+                p.id_tipo_pago,
+                tp.nombre AS tipo_pago_nombre,
+                p.id_adelanto,
+                a.valor AS adelanto_valor
+            FROM Pagos p
+            LEFT JOIN Tipo_Pago tp ON p.id_tipo_pago = tp.id
+            LEFT JOIN Adelanto a ON p.id_adelanto = a.id";
+
+    $stmt = $this->pdo->query($sql);
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    echo json_encode($data);
+}
 
     public function obtener($id) {
         $errores = validarPagoId($id);
@@ -129,5 +133,65 @@ class Pagos {
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
+
+    public function listarTiposPago() {
+    try {
+        $sql = "SELECT * FROM Tipo_Pago";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        echo json_encode($data);
+
+    } catch (Exception $e) {
+        echo json_encode(["error" => $e->getMessage()]);
+    }
+}
+
+public function listarAdelantos() {
+    try {
+        $sql = "SELECT * FROM Adelanto";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        echo json_encode($data);
+
+    } catch (Exception $e) {
+        echo json_encode(["error" => $e->getMessage()]);
+    }
+}
+
+
+
+public function estadisticas() {
+    $hoy = date('Y-m-d');
+    $tresDias = date('Y-m-d', strtotime('+3 days'));
+
+    // Total Adelantos
+    $sql1 = $this->pdo->query("SELECT SUM(a.valor) AS total_adelantos
+                               FROM Pagos p
+                               INNER JOIN Adelanto a ON p.id_adelanto = a.id");
+
+    // Pagos A Tiempo
+    $sql2 = $this->pdo->query("SELECT COUNT(*) AS a_tiempo
+                               FROM Pagos WHERE fecha_vencimiento > '$hoy'");
+
+    // Por Vencerse
+    $sql3 = $this->pdo->query("SELECT COUNT(*) AS por_vencerse
+                               FROM Pagos 
+                               WHERE fecha_vencimiento BETWEEN '$hoy' AND '$tresDias'");
+
+    // Vencidos
+    $sql4 = $this->pdo->query("SELECT COUNT(*) AS vencidos
+                               FROM Pagos WHERE fecha_vencimiento < '$hoy'");
+
+    return [
+        'total_adelantos' => $sql1->fetch(PDO::FETCH_ASSOC)['total_adelantos'],
+        'a_tiempo'        => $sql2->fetch(PDO::FETCH_ASSOC)['a_tiempo'],
+        'por_vencerse'    => $sql3->fetch(PDO::FETCH_ASSOC)['por_vencerse'],
+        'vencidos'        => $sql4->fetch(PDO::FETCH_ASSOC)['vencidos'],
+    ];
+}
 }
 ?>

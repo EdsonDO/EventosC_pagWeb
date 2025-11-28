@@ -1,0 +1,93 @@
+<h2>Listado de Pagos</h2>
+
+<div class="cards">
+  <div class="card">
+    <h4>Total Adelantos</h4>
+    <p>S/. {{ estadisticas.total_adelantos }}</p>
+  </div>
+
+  <div class="card">
+    <h4>Pagos a Tiempo</h4>
+    <p>{{ estadisticas.a_tiempo }}</p>
+  </div>
+
+  <div class="card">
+    <h4>Por Vencerse</h4>
+    <p>{{ estadisticas.por_vencerse }}</p>
+  </div>
+
+  <div class="card">
+    <h4>Vencidos</h4>
+    <p>{{ estadisticas.vencidos }}</p>
+  </div>
+</div>
+
+<input type="text" placeholder="Buscar por tarjeta o voucher" [(ngModel)]="filtro" name="filtro" style="margin-bottom:10px; padding:5px; width:300px">
+
+
+<table border="1" width="100%" cellspacing="0" cellpadding="5">
+  <thead style="background-color:#f0f0f0">
+    <tr>
+      <th>ID</th>
+      <th>Tarjeta</th>
+      <th>Fecha Vencimiento</th>
+      <th>CVV</th>
+      <th>Voucher</th>
+      <th>Tipo Pago</th>
+      <th>Adelanto</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let p of pagos | filterPagos:filtro">
+      <td>{{ p.id }}</td>
+      <td>{{ p.numero_tarjeta }}</td>
+      <td>{{ p.fecha_vencimiento }}</td>
+      <td>{{ p.cvv }}</td>
+      <td>{{ p.voucer }}</td>
+     <td>{{ p.tipo_pago_nombre }}</td>
+      <td>{{ p.adelanto_valor }}</td>
+      <td>
+        <button (click)="editarPago(p)">Editar</button>
+        <button *ngIf="p.id !== undefined" (click)="eliminarPago(p.id)">Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<div *ngIf="mostrarFormulario && pago" class="modal-backdrop">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Editar Pago</h3>
+      <button class="close-btn" (click)="cancelar()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Tarjeta:</label>
+        <input [(ngModel)]="pago.numero_tarjeta" placeholder="0000 0000 0000 0000" />
+      </div>
+
+      <div class="form-group">
+        <label>Fecha de Vencimiento:</label>
+        <input [(ngModel)]="pago.fecha_vencimiento" type="date" />
+      </div>
+
+      <div class="form-group">
+        <label>CVV:</label>
+        <input [(ngModel)]="pago.cvv" maxlength="4" placeholder="123" />
+      </div>
+
+      <div class="form-group">
+        <label>Voucher:</label>
+        <input [(ngModel)]="pago.voucer" placeholder="Ingrese voucher" />
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn save" (click)="guardarPago()">Guardar</button>
+      <button class="btn cancel" (click)="cancelar()">Cancelar</button>
+    </div>
+  </div>
+</div>
