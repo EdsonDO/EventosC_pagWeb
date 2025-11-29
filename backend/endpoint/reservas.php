@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-require_once 'componentes/reservas.php';
+require_once __DIR__ . '/../componentes/reservas.php';
 
 $reservas = new Reservas();
 $accion = $_GET['accion'] ?? '';

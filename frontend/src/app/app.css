@@ -1,38 +1,93 @@
-/* Estilo para quitar borde y sombra del panelMenu */
-::ng-deep .p-panelmenu {
-  border: none !important;
-  box-shadow: none !important;
-}
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
-/* También podrías querer eliminar el borde de los items */
-::ng-deep .p-panelmenu .p-panelmenu-panel {
-  border: none !important;
-}
-
-::ng-deep .menu-section-title {
-  font-weight: bold;
-  text-transform: uppercase;
-  opacity: 1 !important;
-  pointer-events: none;
-  cursor: default;
-  background-color: transparent !important;
-  color: #000 !important;
+:root {
+    --primary-bg: #111111;
+    --drawer-bg: #18181b;
+    --accent-color: #6366f1;
+    --accent-hover: #4f46e5;
+    --text-color: #ffffff;
+    --text-muted: #a1a1aa;
+    --active-bg: rgba(99, 102, 241, 0.15);
 }
 
 * {
-  font-family: 'Poppins', sans-serif !important;
+    font-family: 'Poppins', sans-serif !important;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    margin: 0;
+}
+
+::ng-deep .side-drawer .p-drawer-content {
+    background-color: var(--drawer-bg) !important;
+    border-right: 1px solid #27272a;
+    padding: 1.5rem !important;
+}
+
+::ng-deep .profile-drawer .p-drawer-content {
+    background-color: var(--drawer-bg) !important;
+    color: var(--text-color);
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 20px;
 }
 
 .menu-btn {
-  width: 100%;
-  justify-content: flex-start;
-  border-radius: 10px;
-  margin: 5px 0;
-  padding: 12px;
+    width: 100%;
+    justify-content: flex-start;
+    border-radius: 12px !important;
+    padding: 14px 16px !important;
+    color: var(--text-muted) !important;
+    background: transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent !important;
+    font-weight: 500 !important;
+    font-size: 0.95rem !important;
+}
+
+.menu-btn:hover {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    color: var(--text-color) !important;
+    transform: translateX(5px);
 }
 
 .active-btn {
-  background-color: var(--primary-color, #333) !important;
-  color: white !important;
-  font-weight: bold;
+    background-color: var(--active-bg) !important;
+    color: var(--accent-color) !important;
+    border: 1px solid rgba(99, 102, 241, 0.3) !important;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+}
+
+.active-btn i {
+    color: var(--accent-color) !important;
+}
+
+::ng-deep .p-button.p-button-rounded {
+    background: var(--drawer-bg);
+    border: 1px solid #3f3f46;
+    color: var(--text-color);
+}
+
+::ng-deep .p-button.p-button-rounded:hover {
+    background: #27272a !important;
+    border-color: var(--accent-color) !important;
+}
+
+h2 {
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    margin: 0;
+}
+
+p-button button {
+    background: transparent !important;
+    border: none !important;
+    color: var(--text-color) !important;
 }

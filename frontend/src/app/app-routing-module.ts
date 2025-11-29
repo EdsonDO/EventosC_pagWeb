@@ -4,15 +4,18 @@ import { Clientes } from './clientes/clientes';
 import { Proveedores } from './proveedores/proveedores';
 import { Recursos } from './recursos/recursos';
 import { Roles } from './roles/roles';
-
 import { Pagos } from './pagos/pagos';
+
+import { ReservasComponent } from './reservas/reservas';
+
 const routes: Routes = [
   { path: 'roles', component: Roles },
   { path: 'recursos', component: Recursos },
   { path: 'proveedores', component: Proveedores },
   { path: 'clientes', component: Clientes },
- // { path: 'mantenimientos',component:Mantenimientos}, opcional si quieren implementar
-  { path: 'pagos',component:Pagos},
+  { path: 'pagos', component: Pagos},
+
+  { path: 'reservas', component: ReservasComponent },
 ];
 
 @NgModule({
