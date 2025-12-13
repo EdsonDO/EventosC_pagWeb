@@ -1,0 +1,288 @@
+<?php
+$sedeModel = new Sede();
+$alerta = null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $accion = $_POST['accion'] ?? '';
+    try {
+        if ($accion === 'crear') {
+            $datos = [
+                'nombre' => trim($_POST['nombre']),
+                'direccion' => trim($_POST['direccion']),
+                'capacidad' => intval($_POST['capacidad']),
+                'precio_base' => floatval($_POST['precio_base'])
+            ];
+            if ($sedeModel->crearSede($datos))
+                $alerta = ['tipo' => 'success', 'msj' => 'Sede creada correctamente.'];
+            else
+                $alerta = ['tipo' => 'error', 'msj' => 'Error al crear la sede.'];
+        } elseif ($accion === 'editar') {
+            $id = intval($_POST['id_sede']);
+            $datos = [
+                'nombre' => trim($_POST['nombre']),
+                'direccion' => trim($_POST['direccion']),
+                'capacidad' => intval($_POST['capacidad']),
+                'precio_base' => floatval($_POST['precio_base'])
+            ];
+            if ($sedeModel->actualizarSede($id, $datos))
+                $alerta = ['tipo' => 'success', 'msj' => 'Sede actualizada.'];
+            else
+                $alerta = ['tipo' => 'error', 'msj' => 'Error al guardar cambios.'];
+        } elseif ($accion === 'eliminar') {
+            $id = intval($_POST['id_eliminar']);
+            if ($sedeModel->eliminarSede($id))
+                $alerta = ['tipo' => 'success', 'msj' => 'Sede eliminada.'];
+            else
+                $alerta = ['tipo' => 'error', 'msj' => 'No se puede eliminar: Tiene eventos asignados.'];
+        }
+    } catch (Exception $e) {
+        $alerta = ['tipo' => 'error', 'msj' => $e->getMessage()];
+    }
+}
+
+$sedes = $sedeModel->listarSedes();
+require_once 'Frontend/views/layouts/admin_header.php';
+?>
+
+<title>Sedes | Panel Admin</title>
+
+<div class="admin-container animate-fade-in">
+
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+        <div>
+            <h1 class="text-3xl font-brand text-white flex items-center gap-3">
+                <span
+                    class="p-2 bg-green-600/20 rounded-lg text-green-400 border border-green-500/30 shadow-[0_0_15px_rgba(57,255,20,0.3)]">
+                    <span class="material-symbols-rounded" style="font-size: 32px;">location_city</span>
+                </span>
+                GESTIÓN DE SEDES
+            </h1>
+            <p class="text-gray-400 mt-2 font-light text-sm pl-1">Administración de espacios físicos y capacidades.</p>
+        </div>
+
+        <a href="index.php?view=dashboard" class="nav-btn group">
+            <span class="material-symbols-rounded group-hover:-translate-x-1 transition-transform">arrow_back</span>
+            VOLVER AL DASHBOARD
+        </a>
+    </div>
+
+    <?php if ($alerta): ?>
+        <div
+            class="mb-8 p-4 rounded-xl flex items-center gap-4 border backdrop-blur-md <?php echo $alerta['tipo'] === 'success' ? 'bg-green-900/30 border-green-500/50 text-green-400 shadow-[0_0_20px_rgba(34,197,94,0.1)]' : 'bg-red-900/30 border-red-500/50 text-red-400 shadow-[0_0_20px_rgba(239,68,68,0.1)]'; ?>">
+            <div
+                class="p-2 rounded-full <?php echo $alerta['tipo'] === 'success' ? 'bg-green-500/20' : 'bg-red-500/20'; ?>">
+                <span
+                    class="material-symbols-rounded"><?php echo $alerta['tipo'] === 'success' ? 'check' : 'priority_high'; ?></span>
+            </div>
+            <span class="font-bold tracking-wide"><?php echo $alerta['msj']; ?></span>
+        </div>
+    <?php endif; ?>
+
+    <div class="static-card border-green mb-8">
+        <span class="material-symbols-rounded module-bg-icon text-green-500/10">add_business</span>
+
+        <div class="card-content">
+            <div class="mb-6 flex justify-between items-center border-b border-gray-800 pb-4">
+                <h2 id="form-title" class="text-lg font-brand text-white flex items-center gap-2">
+                    <span class="text-green-500 material-symbols-rounded">add_circle</span> NUEVA SEDE
+                </h2>
+                <button type="button" id="btn-cancelar" onclick="cancelarEdicion()"
+                    class="hidden text-xs text-gray-400 hover:text-white uppercase font-bold flex items-center gap-1 transition-colors">
+                    <span class="material-symbols-rounded text-sm">close</span> Cancelar
+                </button>
+            </div>
+
+            <form method="POST" id="form-sede" class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                <input type="hidden" name="accion" id="input-accion" value="crear">
+                <input type="hidden" name="id_sede" id="input-id">
+
+                <div class="md:col-span-4 flex flex-col justify-end space-y-2">
+                    <label class="text-[10px] font-bold text-green-400 uppercase tracking-widest ml-1">Nombre de
+                        Sede</label>
+                    <div class="relative group">
+                        <span
+                            class="absolute left-3 top-3 text-gray-500 group-focus-within:text-green-500 transition-colors material-symbols-rounded text-xl">store</span>
+                        <input type="text" name="nombre" id="input-nombre" required
+                            class="w-full bg-[#0a0a0a] border border-[#2a2a2a] text-white pl-10 pr-4 py-3 rounded-lg focus:border-green-500 focus:shadow-[0_0_15px_rgba(57,255,20,0.3)] outline-none transition-all placeholder-gray-700"
+                            placeholder="Ej. Gran Salón">
+                    </div>
+                </div>
+
+                <div class="md:col-span-5 flex flex-col justify-end space-y-2">
+                    <label class="text-[10px] font-bold text-green-400 uppercase tracking-widest ml-1">Dirección</label>
+                    <div class="relative group">
+                        <span
+                            class="absolute left-3 top-3 text-gray-500 group-focus-within:text-green-500 transition-colors material-symbols-rounded text-xl">map</span>
+                        <input type="text" name="direccion" id="input-direccion" required
+                            class="w-full bg-[#0a0a0a] border border-[#2a2a2a] text-white pl-10 pr-4 py-3 rounded-lg focus:border-green-500 focus:shadow-[0_0_15px_rgba(57,255,20,0.3)] outline-none transition-all placeholder-gray-700"
+                            placeholder="Av. Principal 123">
+                    </div>
+                </div>
+
+                <div class="md:col-span-3 flex flex-col justify-end space-y-2">
+                    <label class="text-[10px] font-bold text-green-400 uppercase tracking-widest ml-1">Aforo
+                        Máx.</label>
+                    <div class="relative group">
+                        <span
+                            class="absolute left-3 top-3 text-gray-500 group-focus-within:text-green-500 transition-colors material-symbols-rounded text-xl">groups</span>
+                        <input type="number" name="capacidad" id="input-capacidad" required min="1"
+                            class="w-full bg-[#0a0a0a] border border-[#2a2a2a] text-white pl-10 pr-4 py-3 rounded-lg focus:border-green-500 focus:shadow-[0_0_15px_rgba(57,255,20,0.3)] outline-none transition-all placeholder-gray-700 font-mono"
+                            placeholder="200">
+                    </div>
+                </div>
+
+                <div class="md:col-span-3 flex flex-col justify-end space-y-2">
+                    <label class="text-[10px] font-bold text-green-400 uppercase tracking-widest ml-1">Precio
+                        Base</label>
+                    <div class="relative group">
+                        <span
+                            class="absolute left-3 top-3 text-gray-500 group-focus-within:text-green-500 transition-colors material-symbols-rounded text-xl">attach_money</span>
+                        <input type="number" step="0.01" name="precio_base" id="input-precio" required min="0"
+                            class="w-full bg-[#0a0a0a] border border-[#2a2a2a] text-white pl-10 pr-4 py-3 rounded-lg focus:border-green-500 focus:shadow-[0_0_15px_rgba(57,255,20,0.3)] outline-none transition-all placeholder-gray-700 font-mono"
+                            placeholder="0.00">
+                    </div>
+                </div>
+
+                <div class="md:col-span-12 flex justify-end pt-4 mt-2 border-t border-white/5">
+                    <button type="submit" id="btn-submit"
+                        class="bg-green-600 hover:bg-green-500 hover:scale-[1.02] active:scale-95 text-black px-8 py-3 rounded-lg font-bold uppercase transition-all shadow-lg shadow-green-900/40 flex items-center gap-2">
+                        <span class="material-symbols-rounded">save</span>
+                        <span id="btn-text">GUARDAR SEDE</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <?php if (empty($sedes)): ?>
+        <div class="text-center py-20 border border-dashed border-gray-800 rounded-2xl bg-black/20">
+            <span class="material-symbols-rounded text-gray-700 mb-4" style="font-size: 64px;">location_off</span>
+            <h3 class="text-xl text-gray-500 font-brand">SIN SEDES</h3>
+            <p class="text-gray-600 text-sm mt-2">No hay espacios configurados.</p>
+        </div>
+    <?php else: ?>
+
+        <div class="mb-4 flex items-center gap-2 text-gray-500 text-xs uppercase font-bold tracking-widest pl-2">
+            <span class="material-symbols-rounded text-green-500">swipe</span> Desliza para ver más sedes
+        </div>
+
+        <div class="carousel-wrapper">
+            <button class="nav-arrow" onclick="scrollCarousel(-1)">
+                <span class="material-symbols-rounded">chevron_left</span>
+            </button>
+
+            <div class="carousel-container" id="sedesCarousel">
+                <?php foreach ($sedes as $s): ?>
+                    <div class="carousel-card group hover:border-green-500/50 hover:shadow-[0_10px_30px_rgba(57,255,20,0.15)]">
+
+                        <?php $bgHue = rand(100, 150); ?>
+                        <div class="carousel-img"
+                            style="background: linear-gradient(135deg, hsl(<?php echo $bgHue; ?>, 60%, 15%), hsl(<?php echo $bgHue; ?>, 60%, 5%));">
+                            <span class="material-symbols-rounded"
+                                style="font-size: 60px; color: rgba(57,255,20,0.1);">apartment</span>
+
+                            <div class="carousel-badge">
+                                <span class="material-symbols-rounded" style="font-size: 16px;">groups</span>
+                                <?php echo number_format($s['capacidad']); ?>
+                            </div>
+                        </div>
+
+                        <div class="carousel-body">
+                            <h2 class="carousel-title"><?php echo htmlspecialchars($s['nombre']); ?></h2>
+
+                            <div class="flex items-center gap-2 text-sm text-gray-400 mb-4">
+                                <span class="material-symbols-rounded text-green-500" style="font-size:16px;">pin_drop</span>
+                                <span class="truncate"><?php echo htmlspecialchars($s['direccion']); ?></span>
+                            </div>
+
+                            <div class="bg-white/5 rounded p-2 mb-4 border border-white/5 flex justify-between">
+                                <span class="text-[10px] text-gray-500 uppercase">Precio Base</span>
+                                <span class="text-xs font-bold text-green-400 font-mono">S/
+                                    <?php echo number_format($s['precio_base'], 2); ?></span>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2 mt-auto">
+                                <button onclick='editarSede(<?php echo json_encode($s); ?>)'
+                                    class="py-2 rounded bg-gray-800 hover:bg-green-500 hover:text-black text-gray-300 font-bold text-xs uppercase transition-all flex justify-center items-center gap-1">
+                                    <span class="material-symbols-rounded text-sm">edit</span> Editar
+                                </button>
+
+                                <form method="POST"
+                                    onsubmit="return confirm('⚠️ ¿ELIMINAR SEDE?\n\n🏢 <?php echo addslashes($s['nombre']); ?>\n\nSi tiene eventos, no se eliminará.');"
+                                    class="w-full">
+                                    <input type="hidden" name="accion" value="eliminar">
+                                    <input type="hidden" name="id_eliminar" value="<?php echo $s['id_sede']; ?>">
+                                    <button type="submit"
+                                        class="w-full py-2 rounded bg-gray-800 hover:bg-red-500 hover:text-white text-gray-300 font-bold text-xs uppercase transition-all flex justify-center items-center gap-1">
+                                        <span class="material-symbols-rounded text-sm">delete</span> Borrar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <button class="nav-arrow" onclick="scrollCarousel(1)">
+                <span class="material-symbols-rounded">chevron_right</span>
+            </button>
+        </div>
+    <?php endif; ?>
+</div>
+
+<script>
+    function scrollCarousel(direction) {
+        const container = document.getElementById('sedesCarousel');
+        const cardWidth = 300 + 30;
+        const scrollAmount = cardWidth * 1;
+
+        container.scrollBy({
+            left: direction * scrollAmount,
+            behavior: 'smooth'
+        });
+    }
+
+    function editarSede(data) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        document.getElementById('input-accion').value = 'editar';
+        document.getElementById('input-id').value = data.id_sede;
+        document.getElementById('input-nombre').value = data.nombre;
+        document.getElementById('input-direccion').value = data.direccion;
+        document.getElementById('input-capacidad').value = data.capacidad;
+        document.getElementById('input-precio').value = data.precio_base;
+
+        const title = document.getElementById('form-title');
+        title.innerHTML = '<span class="material-symbols-rounded text-green-400">edit_location_alt</span> EDITANDO SEDE';
+        title.classList.add('text-green-400');
+
+        const btn = document.getElementById('btn-submit');
+        document.getElementById('btn-text').textContent = 'ACTUALIZAR SEDE';
+        btn.querySelector('.material-symbols-rounded').textContent = 'sync';
+
+        btn.classList.remove('bg-green-600', 'hover:bg-green-500', 'shadow-green-900/40', 'text-black');
+        btn.classList.add('bg-white', 'hover:bg-gray-200', 'shadow-white/20', 'text-black');
+
+        document.getElementById('btn-cancelar').classList.remove('hidden');
+    }
+
+    function cancelarEdicion() {
+        document.getElementById('form-sede').reset();
+        document.getElementById('input-accion').value = 'crear';
+        document.getElementById('input-id').value = '';
+
+        const title = document.getElementById('form-title');
+        title.innerHTML = '<span class="text-green-500 material-symbols-rounded">add_circle</span> NUEVA SEDE';
+        title.classList.remove('text-green-400');
+
+        const btn = document.getElementById('btn-submit');
+        document.getElementById('btn-text').textContent = 'GUARDAR SEDE';
+        btn.querySelector('.material-symbols-rounded').textContent = 'save';
+
+        btn.classList.remove('bg-white', 'hover:bg-gray-200', 'shadow-white/20', 'text-black');
+        btn.classList.add('bg-green-600', 'hover:bg-green-500', 'shadow-green-900/40', 'text-black');
+
+        document.getElementById('btn-cancelar').classList.add('hidden');
+    }
+</script>
+
+<?php require_once 'Frontend/views/layouts/admin_footer.php'; ?>

@@ -1,0 +1,269 @@
+.video-bg-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.back-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.overlay-dark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(8, 8, 10, 0.85);
+    backdrop-filter: blur(8px);
+}
+
+.login-wrapper {
+    min-height: 85vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+.login-card {
+    display: flex;
+    width: 850px;
+    max-width: 100%;
+    min-height: 500px;
+    background: #141414;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
+    border: 1px solid #333;
+}
+
+.login-left {
+    flex: 1.2;
+    padding: 40px 50px;
+    background: #18181b;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-header {
+    margin-bottom: 30px;
+}
+
+.cy-title {
+    font-family: 'Orbitron', sans-serif;
+    color: #ffffff;
+    font-size: 2.2rem !important;
+    margin-bottom: 5px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.neon-text {
+    color: #39ff14;
+    text-shadow: 0 0 10px rgba(57, 255, 20, 0.4);
+}
+
+.login-header p {
+    color: #aaa;
+    font-size: 0.95rem;
+    margin-top: 5px;
+}
+
+.input-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.input-group label {
+    display: block;
+    color: #ffffff !important;
+    font-size: 1.1rem !important;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.input-group input {
+    width: 100%;
+    height: 50px;
+    padding: 0 15px;
+    background: #222;
+    border: 2px solid #444;
+    border-radius: 6px;
+    color: #fff !important;
+    font-size: 1.1rem !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.input-group input::placeholder {
+    color: #666;
+    font-size: 1rem;
+}
+
+.input-group input:focus {
+    border-color: #39ff14;
+    background: #1a1a1a;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.5), inset 0 0 5px rgba(57, 255, 20, 0.1);
+}
+
+.error-msg {
+    color: #ff4d4d;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 5px;
+    display: none;
+}
+
+.input-group.error .error-msg {
+    display: block;
+}
+
+.input-group.error input {
+    border-color: #ff4d4d;
+    box-shadow: 0 0 10px rgba(255, 77, 77, 0.4);
+}
+
+.btn-login {
+    width: 100%;
+    height: 55px;
+    background-color: #39ff14 !important;
+    color: #000000 !important;
+    font-size: 1.2rem !important;
+    font-weight: 900 !important;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-transform: uppercase;
+    margin-top: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: 'Orbitron', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.6);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.forgot-pass {
+    color: #bbb;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.forgot-pass:hover {
+    color: #39ff14;
+}
+
+.back-link {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.back-link a {
+    color: #888;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.back-link a:hover {
+    color: #fff;
+}
+
+
+.login-right {
+    flex: 1;
+    background: #111;
+    background-image: radial-gradient(#222 1px, transparent 1px);
+    background-size: 20px 20px;
+
+    border-left: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.ec-logo-glow {
+    width: 180px;
+    height: auto;
+    filter: drop-shadow(0 0 20px rgba(57, 255, 20, 0.3));
+    transition: all 0.5s ease;
+}
+
+.login-right:hover .ec-logo-glow {
+    filter: drop-shadow(0 0 35px rgba(57, 255, 20, 0.8));
+    transform: scale(1.05);
+}
+
+.right-text {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.right-text h3 {
+    color: #fff;
+    font-family: 'Orbitron';
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+    letter-spacing: 2px;
+}
+
+.right-text p {
+    color: #666;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+.php-error-alert {
+    background: rgba(255, 77, 77, 0.1);
+    border: 1px solid #ff4d4d;
+    color: #ff4d4d;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+@media (max-width: 900px) {
+    .login-card {
+        width: 90%;
+        height: auto;
+        flex-direction: column;
+    }
+
+    .login-right {
+        display: none;
+    }
+
+    .login-left {
+        padding: 30px;
+    }
+}
