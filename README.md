@@ -1,6 +1,6 @@
 # 🧪 Proyecto Eventos C - Plataforma de Gestión de Eventos
 
-> **Desarrollado con orgullo y cafeína por:**  
+> **Desarrollado por:**  
 > 👤 **Edson DO (TriVisioN)**  
 
 ---
